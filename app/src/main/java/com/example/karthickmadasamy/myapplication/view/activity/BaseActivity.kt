@@ -1,9 +1,6 @@
 package com.example.karthickmadasamy.myapplication.view.activity
 
-import android.app.AlertDialog
-import android.content.DialogInterface
 import android.support.v7.app.AppCompatActivity
-import android.util.Log
 
 import com.example.karthickmadasamy.myapplication.R
 

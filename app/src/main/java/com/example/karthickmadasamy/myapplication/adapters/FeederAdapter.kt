@@ -51,7 +51,7 @@ class FeederAdapter
         else
             holder.tvDescription.text = context.resources.getString(R.string.description_not_available)
         //        holder.click(rowsList.get(position),onItemClickListener);
-        Glide.with(context).load(feederList.get(position).imageHref).diskCacheStrategy(DiskCacheStrategy.SOURCE).placeholder(R.drawable.lazyimage).into(holder.imageViewFeeder);
+        Glide.with(context).load(this.feederList[position].imageHref).diskCacheStrategy(DiskCacheStrategy.SOURCE).placeholder(R.drawable.lazyimage).into(holder.imageViewFeeder);
     }
 
     override fun getItemCount(): Int {
