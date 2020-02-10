@@ -1,10 +1,7 @@
 package com.example.karthickmadasamy.myapplication.adapters
 
 import android.content.Context
-import android.os.Bundle
-import android.os.Parcelable
 import android.support.v7.widget.RecyclerView
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -28,7 +25,6 @@ class FeederAdapter
 
 
 (private val context: Context) : RecyclerView.Adapter<FeederAdapter.FeederHolder>() {
-    private val TAG = this@FeederAdapter.javaClass.name
 
     var feederList: List<FeederEntity> = ArrayList()
         set(feederList) {
@@ -51,7 +47,7 @@ class FeederAdapter
         else
             holder.tvDescription.text = context.resources.getString(R.string.description_not_available)
         //        holder.click(rowsList.get(position),onItemClickListener);
-        Glide.with(context).load(this.feederList[position].imageHref).diskCacheStrategy(DiskCacheStrategy.SOURCE).placeholder(R.drawable.lazyimage).into(holder.imageViewFeeder);
+        Glide.with(context).load(this.feederList[position].imageHref).diskCacheStrategy(DiskCacheStrategy.SOURCE).placeholder(R.drawable.lazyimage).into(holder.imageViewFeeder)
     }
 
     override fun getItemCount(): Int {

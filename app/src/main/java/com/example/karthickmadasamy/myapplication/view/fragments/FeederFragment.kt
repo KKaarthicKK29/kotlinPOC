@@ -1,6 +1,7 @@
 package com.example.karthickmadasamy.myapplication.view.fragments
 
 import android.arch.lifecycle.ViewModelProviders
+import android.content.res.Configuration
 import android.os.Bundle
 
 import android.support.v7.app.AppCompatActivity
@@ -17,16 +18,14 @@ import android.widget.Toast
 import com.example.karthickmadasamy.myapplication.R
 import com.example.karthickmadasamy.myapplication.adapters.FeederAdapter
 import com.example.karthickmadasamy.myapplication.models.FeederModel
-import com.example.karthickmadasamy.myapplication.models.Rows
 import com.example.karthickmadasamy.myapplication.presenter.MainPresenter
 import com.example.karthickmadasamy.myapplication.presenter.MainViewInterface
 import com.example.karthickmadasamy.myapplication.viewmodel.FeederViewModel
 
 import butterknife.BindView
 import butterknife.ButterKnife
-import kotlinx.android.synthetic.main.feeder_fragment.*
 //Added SwipeRefresh action to this class
-//import android.support.v4.widget.SwipeRefreshLayout
+import android.support.v4.widget.SwipeRefreshLayout
 import android.support.v7.widget.RecyclerView
 
 
@@ -41,8 +40,6 @@ import android.support.v7.widget.RecyclerView
  */
 
 class FeederFragment : BaseFragment(), MainViewInterface {
-    private val TAG = this@FeederFragment.javaClass.name
-
 
     @BindView(R.id.feeder_view)
     lateinit var newsView: RecyclerView
@@ -53,12 +50,11 @@ class FeederFragment : BaseFragment(), MainViewInterface {
     @BindView(R.id.toolbar)
     lateinit var toolbar: Toolbar
 
-   /* @BindView(R.id.swipeToRefresh)
-    internal var mSwipeRefreshLayout: SwipeRefreshLayout? = null*/
+    @BindView(R.id.swipeToRefresh)
+    lateinit var mSwipeRefreshLayout: SwipeRefreshLayout
 
     var adapter: FeederAdapter? = null
     internal lateinit var mainPresenter: MainPresenter
-    private val mRowsList: List<Rows>? = null
 
     private var feederViewModel: FeederViewModel? = null
 
@@ -73,31 +69,39 @@ class FeederFragment : BaseFragment(), MainViewInterface {
         ButterKnife.bind(this, view)
         feederViewModel = ViewModelProviders.of(this).get(FeederViewModel::class.java)
         (activity as AppCompatActivity).setSupportActionBar(toolbar)
-        newsView!!.layoutManager = LinearLayoutManager(activity)
-        newsView!!.adapter = adapter
-
+        newsView.layoutManager = LinearLayoutManager(activity)
+        newsView.adapter = adapter
         initMVP()
-
+        mainPresenter.initObserver()
         swipeRefresh()
         return view
+    }
+
+    override fun onConfigurationChanged(newConfig: Configuration?) {
+        super.onConfigurationChanged(newConfig)
     }
 
     /**
      * initialize Model View Presenter
      */
     private fun initMVP() {
-        mainPresenter = MainPresenter(this, this!!.activity!!)
-        if (isNetworkAvailable) {
+        mainPresenter = MainPresenter(this)
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        if(isNetworkAvailable) {
             mainPresenter.getRows()
         }
+
     }
 
     private fun swipeRefresh() {
-     /*   mSwipeRefreshLayout!!.setColorSchemeResources(R.color.colorAccent)
-        mSwipeRefreshLayout!!.setOnRefreshListener {
+        mSwipeRefreshLayout.setColorSchemeResources(R.color.colorAccent)
+        mSwipeRefreshLayout.setOnRefreshListener {
             mainPresenter.getRows()
-            mSwipeRefreshLayout!!.isRefreshing = false
-        }*/
+            mSwipeRefreshLayout.isRefreshing = false
+        }
     }
 
     override fun showToast(str: String) {
@@ -105,11 +109,11 @@ class FeederFragment : BaseFragment(), MainViewInterface {
     }
 
     override fun showProgressBar() {
-        progressBar!!.visibility = View.VISIBLE
+        progressBar.visibility = View.VISIBLE
     }
 
     override fun hideProgressBar() {
-        progressBar!!.visibility = View.GONE
+        progressBar.visibility = View.GONE
     }
 
     override fun displayFeeder(newsResponse: FeederModel) {
@@ -138,13 +142,6 @@ class FeederFragment : BaseFragment(), MainViewInterface {
         return super.onOptionsItemSelected(item)
     }
 
-    companion object {
 
-        private val FEEDER_LIST = "FeederEntity Adapter Data"
-
-        fun newInstance(): FeederFragment {
-            return FeederFragment()
-        }
-    }
 }
 

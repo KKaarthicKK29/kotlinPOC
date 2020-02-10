@@ -3,7 +3,6 @@ package com.example.karthickmadasamy.myapplication.presenter
 import android.arch.lifecycle.Observer
 import android.arch.lifecycle.ViewModelProviders
 import android.content.Context
-import android.util.Log
 
 import com.example.karthickmadasamy.myapplication.models.FeederModel
 import com.example.karthickmadasamy.myapplication.network.NetworkClient
@@ -11,12 +10,10 @@ import com.example.karthickmadasamy.myapplication.network.NetworkInterface
 import com.example.karthickmadasamy.myapplication.view.fragments.FeederFragment
 import com.example.karthickmadasamy.myapplication.viewmodel.FeederViewModel
 
-import io.reactivex.Observable
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.annotations.NonNull
-import io.reactivex.observers.DisposableObserver
+import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.schedulers.Schedulers
-
 
 
 /**
@@ -27,48 +24,54 @@ import io.reactivex.schedulers.Schedulers
  * Created by Karthick.Madasamy on 12/4/2019.
  */
 
-class MainPresenter(private val fragment: FeederFragment, var ctx: Context) : MainPresenterInterface {
-    private val TAG = this@MainPresenter.javaClass.name
-    public var feederViewModel: FeederViewModel
-
-    val observable: Observable<FeederModel>
-        get() = NetworkClient.getRetrofitService()!!.create(NetworkInterface::class.java)
-                .rows
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-
-
-    val observer: DisposableObserver<FeederModel>
-        get() = object : DisposableObserver<FeederModel>() {
-
-            override fun onNext(@NonNull model: FeederModel) {
-                model.rows!!.stream().forEach { e ->
-                    if (e.title == null) {
-                        e.title = "sample"
-                    }
-                }
-                fragment.toolbar!!.title = model.title
-                feederViewModel.insertAll(model.rows!!)
-
-            }
-
-            override fun onError(@NonNull e: Throwable) {}
-            override fun onComplete() {
-                fragment.hideProgressBar()
-
-            }
-        }
+class MainPresenter(private val fragment: FeederFragment) : MainPresenterInterface {
+    private var feederViewModel: FeederViewModel
+    private var mCompositeDisposable: CompositeDisposable? = null
 
     init {
-
         feederViewModel = ViewModelProviders.of(fragment).get(FeederViewModel::class.java)
-        feederViewModel.allFeeders.observe(fragment, Observer{ t ->
-            fragment.adapter!!.feederList= t!!
+    }
+
+    fun initObserver() {
+        feederViewModel.allFeeders.observe(fragment, Observer { t ->
+            fragment.adapter!!.feederList = t!!
         })
     }
 
     override fun getRows() {
-        observable.subscribeWith(observer)
+        handleRetrofitCall()
+    }
+
+    private fun handleRetrofitCall() {
+
+        mCompositeDisposable = CompositeDisposable()
+
+        val requestInterface = NetworkClient.getRetrofitService()!!.create(NetworkInterface::class.java)
+
+
+        mCompositeDisposable?.add(requestInterface.getData()
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribeOn(Schedulers.io())
+                .subscribe(this::handleResponse, this::handleError))
+
+    }
+
+    private fun handleResponse(@NonNull model: FeederModel) {
+        model.rows!!.stream().forEach { e ->
+            if (e.title == null) {
+                e.title = "sample"
+            }
+        }
+        fragment.toolbar.title = model.title
+        feederViewModel.insertAll(model.rows!!)
+        feederViewModel.allFeeders
+        fragment.hideProgressBar()
+
+    }
+
+    private fun handleError(error: Throwable) {
+        fragment.hideProgressBar()
+
     }
 }
 

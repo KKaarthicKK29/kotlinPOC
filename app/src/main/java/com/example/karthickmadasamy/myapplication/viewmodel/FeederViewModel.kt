@@ -15,9 +15,6 @@ class FeederViewModel(application: Application) : AndroidViewModel(application) 
 
     private val repository: FeederRepository
 
-    val feederList: List<FeederEntity>
-        get() = repository.listData
-
 
     val allFeeders: LiveData<List<FeederEntity>>
         get() = repository.all
@@ -27,9 +24,7 @@ class FeederViewModel(application: Application) : AndroidViewModel(application) 
 
     }
 
-    fun insert(entity: FeederEntity) {
-        repository.insert(entity)
-    }
+
 
     fun insertAll(entities: List<FeederEntity>) {
         repository.insertAll(entities)

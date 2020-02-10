@@ -1,7 +1,6 @@
 package com.example.karthickmadasamy.myapplication.network
 
 
-import com.example.karthickmadasamy.myapplication.db.FeederEntity
 import com.example.karthickmadasamy.myapplication.models.FeederModel
 
 import io.reactivex.Observable
@@ -12,7 +11,8 @@ import retrofit2.http.GET
  */
 
 interface NetworkInterface {
-    @get:GET("facts.json")
-    val rows: Observable<FeederModel>
+
+    @GET("facts.json")
+    fun getData() : Observable<FeederModel>
 }
 

@@ -12,7 +12,7 @@ import retrofit2.converter.gson.GsonConverterFactory
 
 object NetworkClient {
     private var retrofitService: Retrofit? = null
-    var BASE_URL = "https://dl.dropboxusercontent.com/s/2iodh4vg0eortkl/"
+    private var BASE_URL = "https://dl.dropboxusercontent.com/s/2iodh4vg0eortkl/"
 
     fun getRetrofitService(): Retrofit? {
         if (retrofitService == null) {

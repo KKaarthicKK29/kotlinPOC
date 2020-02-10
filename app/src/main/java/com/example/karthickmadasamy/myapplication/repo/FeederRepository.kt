@@ -3,7 +3,6 @@ package com.example.karthickmadasamy.myapplication.repo
 import android.arch.lifecycle.LiveData
 import android.content.Context
 import android.os.AsyncTask
-import android.util.Log
 
 import com.example.karthickmadasamy.myapplication.db.DbHelper
 import com.example.karthickmadasamy.myapplication.db.FeederDao
@@ -15,8 +14,7 @@ import com.example.karthickmadasamy.myapplication.db.FeederEntity
 
 class FeederRepository(context: Context) {
 
-    internal var dbHelper: DbHelper
-    private val feeders: LiveData<List<FeederEntity>>? = null
+    private var dbHelper: DbHelper
 
     val listData:List<FeederEntity>
     get()=dbHelper.feederDao.listData
