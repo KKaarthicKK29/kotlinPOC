@@ -26,11 +26,6 @@ class FeederRepository(context: Context) {
         dbHelper = DbHelper.getInstance(context)
     }
 
-
-    fun insert(entity: FeederEntity) {
-        InsertNoteAsyncTask(dbHelper.feederDao).execute(entity)
-    }
-
     fun insertAll(entities: List<FeederEntity>) {
         InsertAllNoteAsyncTask(dbHelper.feederDao).execute(entities)
     }
