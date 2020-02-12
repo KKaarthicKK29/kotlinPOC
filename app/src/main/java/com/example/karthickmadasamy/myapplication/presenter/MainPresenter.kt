@@ -36,6 +36,7 @@ class MainPresenter(private val fragment: FeederFragment) : MainPresenterInterfa
         feederViewModel.allFeeders.observe(fragment, Observer { t ->
             fragment.adapter!!.feederList = t!!
         })
+        fragment.hideProgressBar()
     }
 
     override fun getRows() {
@@ -53,6 +54,7 @@ class MainPresenter(private val fragment: FeederFragment) : MainPresenterInterfa
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribeOn(Schedulers.io())
                 .subscribe(this::handleResponse, this::handleError))
+        fragment.showProgressBar()
 
     }
 

@@ -1,7 +1,6 @@
 package com.example.karthickmadasamy.myapplication.view.fragments
 
 import android.arch.lifecycle.ViewModelProviders
-import android.content.res.Configuration
 import android.os.Bundle
 
 import android.support.v7.app.AppCompatActivity
@@ -27,8 +26,6 @@ import butterknife.ButterKnife
 //Added SwipeRefresh action to this class
 import android.support.v4.widget.SwipeRefreshLayout
 import android.support.v7.widget.RecyclerView
-
-
 
 
 /**
@@ -58,6 +55,7 @@ class FeederFragment : BaseFragment(), MainViewInterface {
 
     private var feederViewModel: FeederViewModel? = null
 
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         adapter = FeederAdapter(this.context!!)
@@ -77,8 +75,20 @@ class FeederFragment : BaseFragment(), MainViewInterface {
         return view
     }
 
-    override fun onConfigurationChanged(newConfig: Configuration?) {
-        super.onConfigurationChanged(newConfig)
+
+    override fun onSaveInstanceState(outState: Bundle) {
+        super.onSaveInstanceState(outState)
+        var currentVisiblePosition: Int = 0
+        currentVisiblePosition = (newsView.getLayoutManager() as LinearLayoutManager).findFirstCompletelyVisibleItemPosition()
+        outState.putInt("ListPosition",currentVisiblePosition)
+    }
+
+
+    override fun onViewStateRestored(savedInstanceState: Bundle?) {
+        super.onViewStateRestored(savedInstanceState)
+        if (savedInstanceState != null) {
+            newsView.smoothScrollToPosition(savedInstanceState.getInt("ListPosition"))
+        }
     }
 
     /**
@@ -91,9 +101,12 @@ class FeederFragment : BaseFragment(), MainViewInterface {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         if(isNetworkAvailable) {
-            mainPresenter.getRows()
+            if(savedInstanceState == null){
+                mainPresenter.getRows()
+            }
+        }else{
+            Toast.makeText(context,resources.getString(R.string.network_connection_message),Toast.LENGTH_LONG).show()
         }
-
     }
 
     private fun swipeRefresh() {
@@ -141,7 +154,5 @@ class FeederFragment : BaseFragment(), MainViewInterface {
         }
         return super.onOptionsItemSelected(item)
     }
-
-
 }
 
