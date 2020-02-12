@@ -2,7 +2,6 @@ package com.example.karthickmadasamy.myapplication.presenter
 
 import android.arch.lifecycle.Observer
 import android.arch.lifecycle.ViewModelProviders
-import android.content.Context
 
 import com.example.karthickmadasamy.myapplication.models.FeederModel
 import com.example.karthickmadasamy.myapplication.network.NetworkClient

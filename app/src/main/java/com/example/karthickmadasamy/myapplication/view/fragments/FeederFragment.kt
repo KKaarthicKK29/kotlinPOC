@@ -78,7 +78,7 @@ class FeederFragment : BaseFragment(), MainViewInterface {
 
     override fun onSaveInstanceState(outState: Bundle) {
         super.onSaveInstanceState(outState)
-        var currentVisiblePosition: Int = 0
+        var currentVisiblePosition = 0
         currentVisiblePosition = (newsView.getLayoutManager() as LinearLayoutManager).findFirstCompletelyVisibleItemPosition()
         outState.putInt("ListPosition",currentVisiblePosition)
     }
