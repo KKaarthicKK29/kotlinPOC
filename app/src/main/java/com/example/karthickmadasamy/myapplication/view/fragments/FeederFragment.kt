@@ -86,7 +86,7 @@ class FeederFragment : BaseFragment(), MainViewInterface {
 
     override fun onViewStateRestored(savedInstanceState: Bundle?) {
         super.onViewStateRestored(savedInstanceState)
-        if (savedInstanceState != null) {
+        if (savedInstanceState != null && savedInstanceState.getInt("ListPosition") != -1) {
             newsView.smoothScrollToPosition(savedInstanceState.getInt("ListPosition"))
         }
     }
